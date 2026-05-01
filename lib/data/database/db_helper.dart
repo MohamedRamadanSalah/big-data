@@ -85,10 +85,10 @@ class DbHelper {
   String _buildFtsQuery(String raw) {
     // Step 1: Normalize smart/curly quotes from mobile keyboards.
     String input = raw;
-    input = input.replaceAll('\u201c', '"'); // left curly quote → straight
-    input = input.replaceAll('\u201d', '"'); // right curly quote → straight
-    input = input.replaceAll('\u2018', "'"); // left single → straight
-    input = input.replaceAll('\u2019', "'"); // right single → straight
+    input = input.replaceAll('\u201c', '"'); 
+    input = input.replaceAll('\u201d', '"');
+    input = input.replaceAll('\u2018', "'"); 
+    input = input.replaceAll('\u2019', "'");
 
     // Step 2: Extract exact-phrase queries (text inside "...")
     final phraseRe = RegExp(r'"([^"]+)"');
@@ -128,7 +128,6 @@ class DbHelper {
     if (q.length < 2) return [];
 
     final ftsQuery = _buildFtsQuery(q);
-    print('[DbHelper] Input: "$q" => FTS: "$ftsQuery"');
     if (ftsQuery.isEmpty) return [];
 
     final database = await db;
@@ -147,7 +146,6 @@ class DbHelper {
         ''',
         [ftsQuery, limit],
       );
-      print('[DbHelper] Found ${rows.length} results');
       return rows
           .map(PageSummary.fromMap)
           .where((p) =>
@@ -155,8 +153,6 @@ class DbHelper {
               p.title.trim().toLowerCase() != 'no title')
           .toList();
     } catch (e) {
-      // Catch ALL errors so we can debug them
-      print('[DbHelper] SEARCH ERROR: $e');
       return [];
     }
   }
@@ -173,7 +169,6 @@ class DbHelper {
       if (rows.isEmpty) return null;
       return PageModel.fromMap(rows.first);
     } catch (e) {
-      print('[DbHelper] fetchFullPage error: $e');
       return null;
     }
   }

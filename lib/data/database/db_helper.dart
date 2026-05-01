@@ -53,8 +53,6 @@ class DbHelper {
     onProgress?.call(0.1); 
 
     if (Platform.isAndroid) {
-      // Dart's rootBundle.load crashes on 500MB allocations.
-      // Use native Kotlin stream which uses an 8KB memory buffer.
       await _channel.invokeMethod('copyAssetDatabase', {
         'assetName': 'assets/$_dbAssetName',
         'destPath': dbPath,
@@ -84,13 +82,6 @@ class DbHelper {
     );
   }
 
-  // ── FTS5 query builder ────────────────────────────────────────────────────
-  /// Builds an FTS5 MATCH query from user input.
-  ///
-  /// Examples:
-  ///   "med"         → med*
-  ///   "tablet price" → tablet* AND price*
-  ///   exact phrase in quotes is kept as-is for FTS5 phrase matching
   String _buildFtsQuery(String raw) {
     // Step 1: Normalize smart/curly quotes from mobile keyboards.
     String input = raw;

@@ -9,7 +9,6 @@ import '../models/page_model.dart';
 class DbHelper {
   static const _dbAssetName = 'search_data.db';
 
-  // Truncate content to this many chars in list queries to keep RAM low.
   static const _snippetChars = 600;
 
   static Database? _db;
@@ -19,21 +18,18 @@ class DbHelper {
   DbHelper._();
   static final DbHelper instance = DbHelper._();
 
-  // ── FFI init (call once from main) ───────────────────────────────────────
   static Future<void> initFfi() async {
     if (Platform.isAndroid || Platform.isIOS) {
       await applyWorkaroundToOpenSqlite3OnOldAndroidVersions();
     }
 
-    // Save the real path from the Android/iOS OS *before* we override the factory.
-    // Otherwise FFI changes getDatabasesPath() to return `/.dart_tool/...`
     _realDbDir = await getDatabasesPath();
 
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
 
-  // ── first-launch DB copy with progress ───────────────────────────────────
+  // first-launch DB copy with progress 
   static const _channel =
       MethodChannel('com.example.flutter_big_data/asset_copier');
 
@@ -54,7 +50,7 @@ class DbHelper {
       return;
     }
 
-    onProgress?.call(0.1); // UI spinner
+    onProgress?.call(0.1); 
 
     if (Platform.isAndroid) {
       // Dart's rootBundle.load crashes on 500MB allocations.
